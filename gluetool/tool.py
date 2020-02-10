@@ -223,14 +223,15 @@ class Gluetool(object):
         if self.sentry and not failure.sentry_event_id:
             self.sentry.submit_exception(failure, logger=logger)
 
-        self._quit(exit_status)
+        if quit:
+            self._quit(exit_status)
 
     # pylint: disable=invalid-name
     def _handle_failure(self, failure, quit=True):
         # type: (gluetool.glue.Failure) -> NoReturn
 
         try:
-            self._handle_failure_core(failure)
+            self._handle_failure_core(failure, quit=quit)
 
         # pylint: disable=broad-except
         except Exception:
