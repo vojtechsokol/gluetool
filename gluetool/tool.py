@@ -190,7 +190,7 @@ class Gluetool(object):
         sys.exit(exit_status)
 
     # pylint: disable=invalid-name
-    def _handle_failure_core(self, failure):
+    def _handle_failure_core(self, failure, quit=True):
         # type: (gluetool.glue.Failure) -> NoReturn
 
         logger = self._exit_logger
@@ -226,7 +226,7 @@ class Gluetool(object):
         self._quit(exit_status)
 
     # pylint: disable=invalid-name
-    def _handle_failure(self, failure):
+    def _handle_failure(self, failure, quit=True):
         # type: (gluetool.glue.Failure) -> NoReturn
 
         try:
@@ -462,6 +462,9 @@ Will try to submit it to Sentry but giving up on everything else.
         failure, destroy_failure = self.run_pipeline()
 
         if destroy_failure:
+            if failure:
+                self._handle_failure(failure, quit=False)
+
             self._exit_logger.warning('Exception raised when destroying modules, overriding exit status')
 
             self._handle_failure(destroy_failure)
